@@ -17,13 +17,12 @@ def cmd_process():
         month = sys.argv[2]
 
         amount = sys.argv[3]
-        if is_number(amount) == False:
-            print("Not a correct price.")
-            sys.exit()
+        if not is_number(amount):
+            raise InvalidPrice("Not a correct price!")
 
         category = sys.argv[4].lower()
-        if is_valid_category(category) == False:
-            sys.exit()
+        if not is_valid_category(category):
+            raise InvalidCategory("Invalid category name!")
 
         note = sys.argv[5].lower() if len(sys.argv) >= 6 else None
 
@@ -32,20 +31,20 @@ def cmd_process():
 
         month_abbr = find_month(month, is_num=is_number(month))
         if month_abbr == None:
-            sys.exit()
+            raise InvalidMonthName("Not a valid month!")
 
         add_expense(month_abbr, amount, category, note)
 
     elif cmd == "view":
         category = sys.argv[2].lower()
-        if is_valid_category(category) == False:
-            sys.exit()
+        if not is_valid_category(category):
+            raise InvalidCategory("Invalid category name!")
 
         month = sys.argv[3] if len(sys.argv) > 3 else None
         if month != None:
             month_abbr = find_month(month, is_num=is_number(month))
             if month_abbr == None:
-                sys.exit()
+                raise InvalidMonthName("Not a valid month!")
 
         if len(sys.argv) > 4:
             print("Many arguments!")
@@ -77,6 +76,23 @@ Usage:
         print(msg)
 
 
+class Error(Exception):
+    """Base class for custom errors."""
+    pass
+
+class InvalidPrice(Error):
+    """Raises when the price is incorrect."""
+    pass
+
+class InvalidCategory(Error):
+    """Raises when the category is not correct."""
+    pass
+
+class InvalidMonthName(Error):
+    """Raises when the month name is not valid."""
+    pass
+
+
 if __name__ == "__main__":
     try:
         cmd_process()
@@ -84,3 +100,5 @@ if __name__ == "__main__":
         print("⚠️  Missing arguments. Use 'python expense_tracker.py --help' for usage info.")
     except FileNotFoundError:
         print("No data found yet!")
+    except Error as error:
+        print(error)

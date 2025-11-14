@@ -52,7 +52,6 @@ def find_month(month, is_num = False):
         return month_number[int(month)]
 
     else:
-        print("Not a valid month!")
         return None
 
 
