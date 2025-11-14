@@ -11,20 +11,20 @@ def is_number(num):
 
 
 
-def is_valid_category(cat):
+def is_valid_category(cat: str):
     """Checks that the category name to not be a month name or number"""
 
-    month_name = [
-            'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'
-        ]
+    month_name = {
+        'January': 'Jan', 'February': 'Feb', 'March': 'Mar',
+        'April': 'Apr', 'May': 'May', 'June': 'Jun',
+        'July': 'Jul', 'August': 'Aug', 'September': 'Sep',
+        'October': 'Oct', 'November': 'Nov', 'December': 'Dec'
+    }
 
     if is_number(cat):
-        print("Invalid Category name!")
         return False
 
-    elif cat in month_name:
-        print("Category cannot be a month name!")
+    elif (cat.capitalize() in month_name.keys()) or (cat.capitalize() in month_name.values()):
         return False
 
     else:
