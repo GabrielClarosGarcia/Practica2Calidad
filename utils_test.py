@@ -23,6 +23,10 @@ class TestUtils(unittest.TestCase):
     # is_valid_category 
     def test_is_valid_category_month_input(self):
         self.assertFalse(utils.is_valid_category("March"), "Full month name")
+    def test_is_valid_category_full_month_input_lowercase(self):
+        self.assertFalse(utils.is_valid_category("May".lower()), "Full month name lowercase")
+    def test_is_valid_category_abbr_month_input_lowercase(self):
+        self.assertFalse(utils.is_valid_category("Feb".lower()), "Abbr month name lowercase")
     def test_is_valid_category_num_input(self):
         self.assertFalse(utils.is_valid_category(35), "Number")
     def test_is_valid_category_correct_input(self):
