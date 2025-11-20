@@ -6,12 +6,14 @@ from data_handler import add_expense
 from analysis import view_expenses, summary
 from utils import is_number, is_valid_category, find_month
 from visualization import chart
+from config import configure
 
 
 
 def cmd_process():
     """Process the second argument as a command and call the related functions."""
     cmd = sys.argv[1]
+    settings = configure()
 
     if cmd == "add":
         month = sys.argv[2]
@@ -33,7 +35,7 @@ def cmd_process():
         if month_abbr == None:
             raise InvalidMonthName("Not a valid month!")
 
-        add_expense(month_abbr, amount, category, note)
+        add_expense(month_abbr, amount, category, note, file_name=settings["data_file"])
 
     elif cmd == "view":
         category = sys.argv[2].lower()
@@ -49,13 +51,15 @@ def cmd_process():
         if len(sys.argv) > 4:
             print("Many arguments!")
 
-        view_expenses(category, month_name = month_abbr if month != None else None)
+        view_expenses(
+            category, month_name = month_abbr if month != None else None, fl_name=settings["data_file"], currency=settings["currency"]
+            )
 
 
     elif cmd == "summary":
         if len(sys.argv) > 2:
             print("Many arguments!")
-        summary()
+        summary(fl_name=settings["data_file"], currency=settings["currency"])
 
     elif cmd == "chart":
         chart()
