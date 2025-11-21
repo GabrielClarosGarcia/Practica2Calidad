@@ -1,6 +1,14 @@
 """This script has helper functions; formatting, validation"""
 
 
+MONTHS = {
+    'January': 'Jan', 'February': 'Feb', 'March': 'Mar',
+    'April': 'Apr', 'May': 'May', 'June': 'Jun',
+    'July': 'Jul', 'August': 'Aug', 'September': 'Sep',
+    'October': 'Oct', 'November': 'Nov', 'December': 'Dec'
+}
+
+
 def is_number(num):
     """Checks if the input is a number."""
     try:
@@ -14,17 +22,10 @@ def is_number(num):
 def is_valid_category(cat: str):
     """Checks that the category name to not be a month name or number"""
 
-    month_name = {
-        'January': 'Jan', 'February': 'Feb', 'March': 'Mar',
-        'April': 'Apr', 'May': 'May', 'June': 'Jun',
-        'July': 'Jul', 'August': 'Aug', 'September': 'Sep',
-        'October': 'Oct', 'November': 'Nov', 'December': 'Dec'
-    }
-
     if is_number(cat):
         return False
 
-    elif (cat.capitalize() in month_name.keys()) or (cat.capitalize() in month_name.values()):
+    elif (cat.capitalize() in MONTHS.keys()) or (cat.capitalize() in MONTHS.values()):
         return False
 
     else:
@@ -34,19 +35,14 @@ def is_valid_category(cat: str):
 
 def find_month(month, is_num = False):
     """Find the month abbreviation name by month number or full month name"""
-    month_name = {
-        'January': 'Jan', 'February': 'Feb', 'March': 'Mar',
-        'April': 'Apr', 'May': 'May', 'June': 'Jun',
-        'July': 'Jul', 'August': 'Aug', 'September': 'Sep',
-        'October': 'Oct', 'November': 'Nov', 'December': 'Dec'
-    }
+
     month_number = {
         1: 'Jan', 2: 'Feb', 3: 'Mar', 4: 'Apr', 5: 'May', 6: 'Jun',
         7: 'Jul', 8: 'Aug', 9: 'Sep', 10: 'Oct', 11: 'Nov', 12: 'Dec'
     }
 
-    if str(month).capitalize() in month_name.keys():
-        return month_name[str(month).capitalize()]
+    if str(month).capitalize() in MONTHS.keys():
+        return MONTHS[str(month).capitalize()]
 
     elif (is_num == True) and (int(month) in month_number.keys()):
         return month_number[int(month)]
