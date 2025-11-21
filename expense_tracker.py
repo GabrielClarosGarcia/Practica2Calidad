@@ -6,14 +6,14 @@ from data_handler import add_expense
 from analysis import view_expenses, summary
 from utils import is_number, is_valid_category, find_month
 from visualization import chart
-from config import configure
+from config import configure, change_setting
 
 
 
 def cmd_process():
     """Process the second argument as a command and call the related functions."""
-    cmd = sys.argv[1]
     settings = configure()
+    cmd = sys.argv[1]
 
     if cmd == "add":
         month = sys.argv[2]
@@ -64,6 +64,17 @@ def cmd_process():
     elif cmd == "chart":
         chart()
 
+    elif cmd == "config":
+        conf_cmd = sys.argv[2]
+        new_value = sys.argv[3]
+        if len(sys.argv) >= 5:
+            print("Many arguments!")
+        if change_setting(conf_cmd, new_value):
+            print(f"{conf_cmd} successfully changed to {new_value}")
+        else:
+            raise WrongConfigChange("Something went wrong!\nCheck your input and try again.")
+
+
     elif cmd == "--help":
         msg = """
 Usage:
@@ -94,6 +105,13 @@ class InvalidCategory(Error):
 
 class InvalidMonthName(Error):
     """Raises when the month name is not valid."""
+    pass
+
+class WrongConfigChange(Error):
+    """
+    Raises when changing the setting file is not done
+    due to an incorrect configue command or incorrect data.
+    """
     pass
 
 
