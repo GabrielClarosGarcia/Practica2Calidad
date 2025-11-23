@@ -7,9 +7,9 @@ import matplotlib.pyplot as plt
 
 
 
-def chart():
+def chart(file_name):
     """Make pie and bar Charts"""
-    read_csv = load_csv()
+    read_csv = load_csv(file_name=file_name)
 
     pie_data = {}
     for item in read_csv:

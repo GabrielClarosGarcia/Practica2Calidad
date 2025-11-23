@@ -17,7 +17,7 @@ def create_default_data():
     """Creates default data for setting file. It will create the file if it doesn't exist."""
     data = {
         "currency": "Reals",
-        "data_file": "expense.csv",
+        "datafile": "expense.csv",
     }
 
     with open("setting.json", mode="w", encoding="utf-8") as file:
@@ -47,13 +47,13 @@ def change_setting(parameter, value):
     """Changes data of setting.json file as input values."""
     setting = configure()
 
-    if parameter in ["currency", "filename"]:
+    if parameter in ["currency", "datafile"]:
         if parameter == "currency":
             setting["currency"] = value
-        elif parameter == "filename":
+        elif parameter == "datafile":
             if not check_file_name(str(value)):
                 return False
-            setting["data_file"] = value
+            setting["datafile"] = value
 
         write_changes(setting)
         return True

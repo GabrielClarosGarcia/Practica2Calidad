@@ -29,13 +29,13 @@ def cmd_process():
         note = sys.argv[5].lower() if len(sys.argv) >= 6 else None
 
         if len(sys.argv) > 6:
-            print("Many arguments!")
+            raise TooManyArguments("Too many arguments.")
 
         month_abbr = find_month(month, is_num=is_number(month))
         if month_abbr == None:
             raise InvalidMonthName("Not a valid month!")
 
-        add_expense(month_abbr, amount, category, note, file_name=settings["data_file"])
+        add_expense(month_abbr, amount, category, note, file_name=settings["datafile"])
 
     elif cmd == "view":
         category = sys.argv[2].lower()
@@ -49,26 +49,26 @@ def cmd_process():
                 raise InvalidMonthName("Not a valid month!")
 
         if len(sys.argv) > 4:
-            print("Many arguments!")
+            raise TooManyArguments("Too many arguments.")
 
         view_expenses(
-            category, month_name = month_abbr if month != None else None, fl_name=settings["data_file"], currency=settings["currency"]
+            category, month_name = month_abbr if month != None else None, fl_name=settings["datafile"], currency=settings["currency"]
             )
 
 
     elif cmd == "summary":
         if len(sys.argv) > 2:
-            print("Many arguments!")
-        summary(fl_name=settings["data_file"], currency=settings["currency"])
+            raise TooManyArguments("Too many arguments.")
+        summary(fl_name=settings["datafile"], currency=settings["currency"])
 
     elif cmd == "chart":
-        chart()
+        chart(file_name=settings["datafile"])
 
     elif cmd == "config":
         conf_cmd = sys.argv[2]
         new_value = sys.argv[3]
         if len(sys.argv) >= 5:
-            print("Many arguments!")
+            raise TooManyArguments("Too many arguments.")
         if change_setting(conf_cmd, new_value):
             print(f"{conf_cmd} successfully changed to {new_value}")
         else:
@@ -112,6 +112,10 @@ class WrongConfigChange(Error):
     Raises when changing the setting file is not done
     due to an incorrect configue command or incorrect data.
     """
+    pass
+
+class TooManyArguments(Error):
+    """Raises when many arguments is sent in input"""
     pass
 
 
