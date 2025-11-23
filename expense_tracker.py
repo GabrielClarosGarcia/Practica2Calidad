@@ -75,20 +75,30 @@ def cmd_process():
             raise WrongConfigChange("Something went wrong!\nCheck your input and try again.")
 
 
-    elif cmd == "--help":
-        msg = """
+    elif cmd in ["help", "--help", "-h"]:
+        print(msg)
+
+
+# Help message
+msg = """
 Usage:
+    usage: python expense_tracker.py [options] [arguments]
+
+options:
   add <month> <amount> <category> [note]    Add a new expense
   view <category> [month]                   View expenses
   summary                                   Show total spending
   chart                                     Show spending chart
+  config currency|datafile <info>           Change user settings
+  help | --help | -h                        Show this help message
 
-  Examples:
+Examples:
   python expense_tracker.py add 10 23.5 food Lunch
   python expense_tracker.py add March 30 food Dinner
   python expense_tracker.py view food 10
+  python expense_tracker.py config currency USD
+  python expense_tracker.py config datafile USD
 """
-        print(msg)
 
 
 class Error(Exception):
