@@ -13,7 +13,10 @@ from config import configure, change_setting
 def cmd_process():
     """Process the second argument as a command and call the related functions."""
     settings = configure()
+    no_command()
     cmd = sys.argv[1]
+    CMDS = ["add", "view", "summary", "chart", "config"]
+    check_argumets_count(cmd) if cmd in CMDS else None
 
     if cmd == "add":
         month = sys.argv[2]
@@ -27,9 +30,6 @@ def cmd_process():
             raise InvalidCategory("Invalid category name!")
 
         note = sys.argv[5].lower() if len(sys.argv) >= 6 else None
-
-        if len(sys.argv) > 6:
-            raise TooManyArguments("Too many arguments.")
 
         month_abbr = find_month(month, is_num=is_number(month))
         if month_abbr == None:
@@ -48,17 +48,12 @@ def cmd_process():
             if month_abbr == None:
                 raise InvalidMonthName("Not a valid month!")
 
-        if len(sys.argv) > 4:
-            raise TooManyArguments("Too many arguments.")
-
         view_expenses(
             category, month_name = month_abbr if month != None else None, fl_name=settings["datafile"], currency=settings["currency"]
             )
 
 
     elif cmd == "summary":
-        if len(sys.argv) > 2:
-            raise TooManyArguments("Too many arguments.")
         summary(fl_name=settings["datafile"], currency=settings["currency"])
 
     elif cmd == "chart":
@@ -67,20 +62,20 @@ def cmd_process():
     elif cmd == "config":
         conf_cmd = sys.argv[2]
         new_value = sys.argv[3]
-        if len(sys.argv) >= 5:
-            raise TooManyArguments("Too many arguments.")
         if change_setting(conf_cmd, new_value):
             print(f"{conf_cmd} successfully changed to {new_value}")
         else:
             raise WrongConfigChange("Something went wrong!\nCheck your input and try again.")
 
-
     elif cmd in ["help", "--help", "-h"]:
-        print(msg)
+        print(HELP_MSG)
+
+    else:
+        raise UnknownCommand("⚠️ Unknown command!")
 
 
 # Help message
-msg = """
+HELP_MSG = """
 Usage:
     usage: python expense_tracker.py [options] [arguments]
 
@@ -99,6 +94,28 @@ Examples:
   python expense_tracker.py config currency USD
   python expense_tracker.py config datafile USD
 """
+
+
+def no_command():
+    """Checks if there is no command send."""
+    if len(sys.argv) == 1:
+        raise NoCommand("⚠️  No commands?! Use 'python expense_tracker.py --help' for usage info.")
+
+
+def check_argumets_count(cmd: str):
+    """Counts arguments and raise error if it's not in the specified interval"""
+    COMMAND_ARGS = {
+        "add": {"min": 5, "max": 6},
+        "view": {"min": 3, "max": 4},
+        "summary": {"min": 2, "max": 2},
+        "chart": {"min": 2, "max": 2},
+        "config": {"min": 4, "max": 4}
+    }
+
+    if len(sys.argv) < COMMAND_ARGS[cmd]["min"]:
+        raise MissingArguments("❗Missing arguments. Use 'python expense_tracker.py --help' for usage info.")
+    elif len(sys.argv) > COMMAND_ARGS[cmd]["max"]:
+        raise TooManyArguments("❗Too many arguments. Use 'python expense_tracker.py --help' for usage info.")
 
 
 class Error(Exception):
@@ -128,12 +145,24 @@ class TooManyArguments(Error):
     """Raises when many arguments is sent in input"""
     pass
 
+class MissingArguments(Error):
+    """Raises when arguments are missing"""
+    pass
+
+class UnknownCommand(Error):
+    """Raises when an unknown command is sent."""
+    pass
+
+class NoCommand(Error):
+    """Raises when no command is sent."""
+    pass
+
 
 if __name__ == "__main__":
     try:
         cmd_process()
-    except IndexError:
-        print("⚠️  Missing arguments. Use 'python expense_tracker.py --help' for usage info.")
+    # except IndexError as e:
+    #     print(f"⚠️ {e}")
     except FileNotFoundError:
         print("No data found yet!")
     except Error as error:
